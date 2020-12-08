@@ -5,11 +5,11 @@ import axios from 'axios'
 // axios 实例
 const request = axios.create({
     // 基础路径
-    baseURL: 'http://ttapi.research.itcast.cn/app/'
+    baseURL: 'http://ttapi.research.itcast.cn/'
 })
 
-// 请求拦截
-// 响应拦截
+// 请求拦截器
+// 响应拦截器
 
 // 导出
 export default request

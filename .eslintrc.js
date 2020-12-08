@@ -16,6 +16,7 @@ module.exports = {
         indent: 0,
         'eol-last': 0,
         'func-call-spacing': 0,
-        'space-before-function-paren': 0
+        'space-before-function-paren': 0,
+        'spaced-comment': 0
     }
 }
