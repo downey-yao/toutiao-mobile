@@ -68,7 +68,7 @@ export default {
         return {
             user: {
                 //手机号
-                mobile: '17609297898',
+                mobile: '17090086870',
                 // 验证码
                 code: '246810'
             },
@@ -107,6 +107,10 @@ export default {
 
                 // 将后端返回的用户登录状态（token等数据）放在vuex容器中
                 this.$store.commit('setUser', data.data)
+
+                // 登录成功，跳转回上一页
+                // TODO:此方法暂时使用
+                this.$router.back()
             } catch (error) {
                 // console.log('错误信息', error)
                 Toast.fail('手机号码或者验证码错误，请重试！')
