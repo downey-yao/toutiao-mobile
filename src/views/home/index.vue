@@ -13,7 +13,28 @@
         <!-- 文章列表组件 -->
         <article-list :channel="channel"/>
       </van-tab>
+
+      <!-- 占位符：为了让频道显示全 -->
+      <div slot="nav-right" class="wrap-placeholder"></div>
+
+      <!-- 频道汉堡按钮 -->
+      <div slot="nav-right" class="channel-edit-wrap" @click="isChannelShow = true">
+        <van-icon name="wap-nav" />
+      </div>
     </van-tabs>
+
+    <!-- 频道弹出层组件 -->
+    <van-popup
+      v-model="isChannelShow"
+      get-container="body"
+      closeable
+      close-icon-position="top-left"
+      position="bottom"
+      :style="{ height: '100%' }"
+    >
+      <!-- 频道编辑组件 -->
+      <channel-edit :user-channels="channels"></channel-edit>
+    </van-popup>
   </div>
 </template>
 
@@ -21,17 +42,21 @@
 
 import { getUserChannels } from '@/api/user'
 import ArticleList from './components/article-list'
+import ChannelEdit from './components/channel-edit'
 
 export default {
     name: 'Home-Index',
     data() {
       return {
         active: 2,
-        channels: []
+        channels: [],
+        // 控制频道弹出层的显示和隐藏
+        isChannelShow: true
       }
     },
     components: {
-      ArticleList
+      ArticleList,
+      ChannelEdit
     },
     created() {
       this.loadChannels()
@@ -80,6 +105,26 @@ export default {
       width: 15px;
       height: 3px;
       background: #3296fa;
+    }
+  }
+
+  .wrap-placeholder {
+    width: 33px;
+    flex-shrink: 0;
+  }
+
+  .channel-edit-wrap {
+    position: fixed;
+    right: 0;
+    width: 33px;
+    height: 44px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    opacity: 0.9;
+    .van-icon {
+      font-size: 22px;
     }
   }
 </style>
