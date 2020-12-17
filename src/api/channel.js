@@ -10,3 +10,22 @@ export const getAllChannel = () => {
         url: '/app/v1_0/channels'
     })
 }
+
+/* 添加频道 */
+
+export const addUserChannel = (data) => {
+    return request({
+        methods: 'PATCH',
+        url: '/app/v1_0/user/channels',
+        data
+    })
+}
+
+/* 删除频道 */
+
+export const deleteUserChannel = (channelID) => {
+    return request({
+        methods: 'DELETE',
+        url: `/app/v1_0/user/channels/${channelID}`
+    })
+}

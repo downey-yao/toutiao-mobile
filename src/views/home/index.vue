@@ -33,7 +33,13 @@
       :style="{ height: '100%' }"
     >
       <!-- 频道编辑组件 -->
-      <channel-edit :user-channels="channels"></channel-edit>
+      <!-- $event 表示从 子组件传递过来的 事件参数 -->
+      <channel-edit
+        :user-channels="channels"
+        @updataChannel="active = $event"
+        @close="isChannelShow = false"
+        :active="active">
+      </channel-edit>
     </van-popup>
   </div>
 </template>
@@ -43,16 +49,21 @@
 import { getUserChannels } from '@/api/user'
 import ArticleList from './components/article-list'
 import ChannelEdit from './components/channel-edit'
+import { getItem } from '@/utils/storage'
+import { mapState } from 'vuex'
 
 export default {
     name: 'Home-Index',
     data() {
       return {
-        active: 2,
+        active: 0,
         channels: [],
         // 控制频道弹出层的显示和隐藏
         isChannelShow: true
       }
+    },
+    computed: {
+      ...mapState(['user'])
     },
     components: {
       ArticleList,
@@ -65,9 +76,27 @@ export default {
     methods: {
       /* 请求获取频道数据 */
       async loadChannels() {
-        const { data } = await getUserChannels()
-        // console.log(data)
-        this.channels = data.data.channels
+        // const { data } = await getUserChannels()
+        // this.channels = data.data.channels
+
+        let channels = []
+        if (this.user) {
+          // 已登录
+          const { data } = await getUserChannels()
+          channels = data.data.channels
+        } else {
+          // 未登录
+          const localChannels = getItem('user-channel')
+
+          if (localChannels) {
+            channels = localChannels
+          } else {
+             const { data } = await getUserChannels()
+             channels = data.data.channels
+          }
+        }
+
+        this.channels = channels
       }
     }
 }
