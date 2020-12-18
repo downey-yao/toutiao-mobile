@@ -4,7 +4,7 @@
     <van-nav-bar
       class="app-nav-bar"
       >
-      <van-button class="search-btn" type="primary" icon="search" slot="title" round >搜索</van-button>
+      <van-button class="search-btn" type="primary" to="/search" icon="search" slot="title" round >搜索</van-button>
     </van-nav-bar>
 
     <!-- 文章分类频道标签页 -->
@@ -59,7 +59,7 @@ export default {
         active: 0,
         channels: [],
         // 控制频道弹出层的显示和隐藏
-        isChannelShow: true
+        isChannelShow: false
       }
     },
     computed: {
