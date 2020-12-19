@@ -4,7 +4,8 @@
         icon="search"
         v-for="(item, index) in suggestOptions"
         :key="index"
-        :title="item">
+        @click="$emit('search', item)">
+        <div v-html="hightLight(item)"></div>
       </van-cell>
   </div>
 </template>
@@ -51,7 +52,17 @@ export default {
             suggestOptions: []
         }
     },
-    methods: {}
+    methods: {
+        // 联想词高亮显示方法
+        hightLight(item) {
+            // console.log(item)
+            // replace 方法将字符串替换
+            // new RegExp() 是正则表达式的构造函数
+            // 参数1：字符串， 参数二： 正则匹配模式
+            const RegExpStr = new RegExp(this.searchText, 'gi')
+            return item.replace(RegExpStr, `<span style="color: red">${this.searchText}</span>`)
+        }
+    }
 }
 </script>
 
