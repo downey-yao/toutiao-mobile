@@ -48,6 +48,14 @@ const routes = [{
         name: 'search',
         component: () =>
             import ('@/views/search')
+    },
+    {
+        path: '/article/:articleId',
+        name: 'article',
+        component: () =>
+            import ('../views/article'),
+        // 将动态路由参数到映射到 组件中
+        props: true
     }
 ]
 
