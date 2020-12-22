@@ -38,6 +38,14 @@
           ref="article-content"
           >
         </div>
+
+        <!-- 评论列表 -->
+        <comment-list
+          :source = "articleId"
+          :list = 'commentList'
+          @updata-total-count = "totalCommentCount = $event"
+          @on-click-Reply="onClickReply"
+        ></comment-list>
       </div>
 
       <!-- 文章底部 -->
@@ -48,6 +56,7 @@
           type="default"
           round
           size="small"
+          @click="isPostShow = true"
         >
         写评论
         </van-button>
@@ -55,7 +64,7 @@
         <van-icon
           name="comment-o"
           color="#777"
-          info="123"
+          :info="totalCommentCount"
         ></van-icon>
         <!-- 收藏 -->
         <van-icon
@@ -78,6 +87,33 @@
         >
         </van-icon>
       </div>
+
+      <!-- 发布评论弹窗 -->
+      <van-popup
+        v-model="isPostShow"
+        position="bottom"
+        round
+      >
+        <post-comment
+          :target="articleId"
+          @post-success="onPostSuccess"
+        ></post-comment>
+      </van-popup>
+
+      <!-- 评论回复弹出层 -->
+      <van-popup
+        v-model="isReplyShow"
+        position="bottom"
+        :style="{ height: '75%' }"
+        round
+      >
+        <reply-comment
+          v-if="isReplyShow"
+          :comment="replyComment"
+          :article-id="articleId"
+          @cloceReply="isReplyShow = false"
+        ></reply-comment>
+      </van-popup>
   </div>
 </template>
 
@@ -87,10 +123,19 @@ import './github-markdown.css'
 import { getArticleById, addCollect, DeleteCollect, DeleteLike, addLike } from '@/api/article'
 import { ImagePreview } from 'vant'
 import { fllowUser, DeleteUser } from '@/api/user'
+import CommentList from './components/comment-list'
+import PostComment from './components/post-comment'
+import ReplyComment from './components/reply-comment'
 
 export default {
     name: 'Article',
+    components: {
+      CommentList,
+      PostComment,
+      ReplyComment
+    },
     props: {
+      // 文章ID
       articleId: {
         type: [String, Number, Object],
         required: true
@@ -99,9 +144,19 @@ export default {
     data() {
       return {
         // 文章数据对象
-        article: {}
+        article: {},
         // 控制 关注按钮 状态
         // isFollowLoading: false
+        // 控制发布评论弹出层的状态
+        isPostShow: false,
+        // 文章评论 列表
+        commentList: [],
+        // 评论总数量
+        totalCommentCount: '',
+        // 控制评论回复弹出层的状态
+        isReplyShow: false,
+        // 评论回复 数据
+        replyComment: {}
       }
     },
     created() {
@@ -171,9 +226,11 @@ export default {
         // 已收藏，点击取消收藏
         if (this.article.is_collected) {
           await DeleteCollect(this.articleId)
+          // this.article.is_collected = false
         } else {
           // 未收藏，点击收藏
           await addCollect(this.articleId)
+          // this.article.is_collected = true
         }
 
         // 修改 关注试图
@@ -200,6 +257,23 @@ export default {
 
         // 弹出提示框
         this.$toast.success(this.article.attitude === 1 ? '点赞成功' : '取消点赞')
+      },
+
+      // 处理发布评论成功后的结果
+      onPostSuccess(comment) {
+        // console.log(comment)
+
+        this.totalCommentCount++
+        this.commentList.unshift(comment)
+        this.isPostShow = false
+      },
+
+      onClickReply(comment) {
+        console.log(comment)
+
+        // 将点击的某个评论数据 存储起来
+        this.replyComment = comment
+        this.isReplyShow = true
       }
     }
 }

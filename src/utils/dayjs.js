@@ -16,3 +16,7 @@ Vue.filter('relativeTime', value => {
     // 例：一天前
     return dayjs(value).from(dayjs())
 })
+
+Vue.filter('dateTime', value => {
+    return dayjs(value).format('MM-DD HH:MM')
+})
