@@ -119,7 +119,6 @@ export default {
             }
             this.userChannels.splice(index, 1)
 
-            // TODO: 数据持久化
             if (this.user) {
                 await deleteUserChannel(channel.id)
             } else {
