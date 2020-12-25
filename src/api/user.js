@@ -82,3 +82,13 @@ export const EditUserProfile = data => {
         data
     })
 }
+
+/* 编辑用户个人资料（包含实名认证） */
+
+export const editUserPhoto = data => {
+    return request({
+        method: 'PATCH',
+        url: '/app/v1_0/user/photo',
+        data
+    })
+}
