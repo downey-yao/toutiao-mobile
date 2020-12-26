@@ -62,6 +62,12 @@ const routes = [{
         name: 'user-profile',
         component: () =>
             import ('../views/edit-file')
+    },
+    {
+        path: '/user/chat',
+        name: 'user-chat',
+        component: () =>
+            import ('@/views/user-chat')
     }
 ]
 

@@ -75,7 +75,7 @@
 
     <!-- 消息通知 -->
     <van-cell title="消息通知" is-link to="/" />
-    <van-cell class="mb_4" title="小智同学" is-link to="/" />
+    <van-cell class="mb_4" title="小智同学" is-link to="/user/chat" />
 
     <!-- 退出 -->
     <van-cell v-if="user" class="local-cell" title="退出登录" @click="onLogout"/>

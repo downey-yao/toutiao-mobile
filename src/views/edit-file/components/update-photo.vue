@@ -57,11 +57,11 @@ export default {
   methods: {
     // 上传 将 getCroppedCanvas() 方法 包装成promise方法
     getCroppedCanvas() {
-        return new Promise((resolve) => {
-            this.cropper.getCroppedCanvas().toBlob((file) => {
-                resolve(file)
-            })
-        })
+      return new Promise((resolve) => {
+          this.cropper.getCroppedCanvas().toBlob((file) => {
+              resolve(file)
+          })
+      })
     },
     // 点击确定
     async onConfirm() {
