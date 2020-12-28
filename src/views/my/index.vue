@@ -51,10 +51,20 @@
 
     <!-- 未登录 -->
     <div v-else class="not-login" >
-      <div @click="$router.push('/login')">
+      <div @click="$router.push({
+        name: 'login',
+        query: {
+          redirect: '/my'
+        }
+      })">
         <img class="login-img mb_4" src="./login.jpg" alt="">
       </div>
-      <span class="text" @click="$router.push('/login')">登录/注册</span>
+      <span class="text" @click="$router.push({
+        name: 'login',
+        query: {
+          redirect: '/my'
+        }
+      })">登录/注册</span>
     </div>
 
     <!-- 收藏/历史 -->

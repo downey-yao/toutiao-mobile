@@ -113,7 +113,8 @@ export default {
 
                 // 登录成功，跳转回上一页
                 // TODO:此方法暂时使用
-                this.$router.back()
+                // this.$router.back()
+                this.$router.push(this.$route.query.redirect || '/')
             } catch (error) {
                 // console.log('错误信息', error)
                 Toast.fail('手机号码或者验证码错误，请重试！')

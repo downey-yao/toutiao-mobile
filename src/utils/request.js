@@ -2,10 +2,17 @@
 
 import axios from 'axios'
 import JSONbig from 'json-bigint'
+import { Toast } from 'vant'
+import router from '@/router'
 
 // 在非组件模块中 获取store 必须通过这种方式
 // 这里单独加载 store 和在组件中 this.$store 是一样的
 import store from '../store/index'
+
+// 创建一个 refresh_token 的单独请求
+const refreshTokenReq = axios.create({
+    baseURL: 'http://ttapi.research.itcast.cn/'
+})
 
 // axios 实例
 const request = axios.create({
@@ -55,6 +62,71 @@ request.interceptors.request.use(function(config) {
 })
 
 // 响应拦截器
+request.interceptors.response.use(function(response) {
+    // Any status code that lie within the range of 2xx cause this function to trigger
+    // Do something with response data
+    return response
+}, async function(error) {
+    // 请求响应失败会进入这里
+    // 超过 2XX 的响应码 会在这里处理
+
+    const status = error.response.status
+
+    // 常见的错误状态码
+    if (status === 400) {
+        // 客户端请求参数错误
+        Toast.fail('客户端请求参数异常！')
+    } else if (status === 401) {
+        // token 无效
+        // 1. 如果没有 user 和 user.token ,直接去登录
+        const { user } = store.state
+
+        if (!user || !user.token) {
+            // 直接跳转到登录页
+            return redirectLogin()
+        }
+
+        // 2. 如果有 user.refresh_token，则获取 新的token
+        try {
+            const { data } = await refreshTokenReq({
+                url: '/app/v1_0/authorizations',
+                method: 'PUT',
+                headers: {
+                    Authorization: `Bearer ${user.refresh_token}`
+                }
+            })
+
+            // 3. 拿到新的 token 把他更新到容器里
+            user.token = data.data.token
+            store.commit('setUser', user)
+
+            // 4. 把失败的请求重新发送出去
+            // error.config: 是本次请求的相关配置对象
+            return request(error.config)
+        } catch (err) {
+            // 跳转到登录页
+            redirectLogin()
+        }
+    } else if (status === 403) {
+        // 没有权限操作
+        Toast.fail('您没有权限操作！')
+    } else if (status >= 500) {
+        // 服务端异常
+        Toast.fail('服务端异常，请稍后重试！')
+    }
+    // 抛出异常
+    return Promise.reject(error)
+})
+
+// 跳转到登录页的方法
+function redirectLogin() {
+    router.replace({
+        name: 'login',
+        query: {
+            redirect: router.currentRoute.fullPath
+        }
+    })
+}
 
 // 导出
 export default request
